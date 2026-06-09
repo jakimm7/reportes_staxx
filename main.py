@@ -4,16 +4,10 @@ from proceso.proceso import procesar_data, transcribir_excel
 from utils.utils import cargar_tipo_cambio, init_paths, mover_archivo
 from db.db import init_db, actualizar_estado
 
-DIRECTORIO_REPORTES = "reportes"
-DIRECTORIO_RESUMEN = "resumen"
-DIRECTORIO_ENV = "env"
-ARCHIVO_RESUMEN = "resumen"
-ARCHIVO_ENV = "api-key.env"
-
 def main():
     ruta_env, ruta_reportes, ruta_resumen, ruta_procesados = init_paths()
     client = init_ai_api(ruta_env)
-    init_paths()
+    init_db()
     
     if client is None:
         print(f"[CRÍTICO] No se encontró el motor de IA o API Key en: {ruta_env}")
