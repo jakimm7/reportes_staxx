@@ -5,7 +5,7 @@ import shutil
 from pathlib import Path
 
 RUTA_SAMBA = Path("/srv/reportes_staxx")
-RUTA_APP = Path("/home/jakim/staxx_executive/staxx_reporter")
+RUTA_APP = Path("/home/jakim/staxx_executive/staxx_reporter/env")
 
 DOLAR_API_URL = "https://dolarapi.com/v1/dolares/oficial"
 COMPRA = "compra"
