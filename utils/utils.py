@@ -5,18 +5,13 @@ import shutil
 from pathlib import Path
 
 RUTA_SAMBA = Path("/srv/reportes_staxx")
-RUTA_APP = Path("/home/jakim/app_ml")
+RUTA_APP = Path("/home/jakim/staxx_executive/staxx_reporter")
 
 DOLAR_API_URL = "https://dolarapi.com/v1/dolares/oficial"
 COMPRA = "compra"
 VENTA = "venta"
 
-DIRECTORIO_REPORTES = "reportes"
-DIRECTORIO_RESUMEN = "resumen"
-DIRECTORIO_ENV = "env"
-DIRECTORIO_PROCESADOS = "procesados"
 ARCHIVO_RESUMEN = "resumen"
-ARCHIVO_ENV = "api-key.env"
 EXTENSION_XLSX = ".xlsx"
 
 def cargar_tipo_cambio():
