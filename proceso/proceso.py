@@ -1,124 +1,109 @@
-import openpyxl as openpyxl
-from copy import copy
+import openpyxl
+from openpyxl.utils import get_column_letter
+from openpyxl.formula.translate import Translator
+from datetime import datetime
+from utils.utils import dict_to_array
 
-CANAL = "canal_venta"
-PRODUCTO = "producto"
-TC = "tipo_cambio"
 CANTIDAD = "cantidad"
-IVA = "iva"
-VALOR_FINAL = "valor_venta"
-VALOR_NETO = "valor_neto"
-IBB = "ibb"
+FECHA = "fecha"
+TC = "tipo_cambio"
+VALOR_VENTA = "valor_venta"
 CARGO_VENTA = "cargo_venta"
 COSTO_ENVIO = "costo_envio"
-COSTO_ADMIN = "costo_admin"
-COMISION_VENDEDOR = "costo_vendedor"
-INGRESO_NETO = "ingreso_neto"
+IBB = "ibb"
+VALOR_NETO = "valor_neto"
+IVA = "iva"
 COSTO_IMPORTACION = "costo_importacion"
-GANACIA = "ganancia"
-PORCENTAJE_GANACIA = "porcentaje_ganacia"
-CARGADO_EN_SISTEMA = "cargado_en_sistema"
+COSTO_ADMIN = "costo_admin"
+CANAL = "canal_venta"
+PRODUCTO = "producto"
+COMISION_VENDEDOR = "costo_vendedor"
 
-CANAL_FACTURA = "VENDEDOR"
-PLATAFORMA_E_COMMERCE = "ML"
-MEDIO_E_COMMERCE = "MP"
-MEDIO_FACTURA_A = "Transferencia"
+PLATAFORMA_E_COMMERCE = "Mercado Libre"
 ESTANTERIA_200 = "200 KG"
 ESTANTERIA_300 = "300 KG"
 
-COSTO_800 = 65.58
-COSTO_1200 = 87.17
+FORMATO_FECHA = "%d/%m/%Y"
+
+COSTO_200 = 65.58
+COSTO_300 = 87.17
 
 ALICUOTA_IVA = 1.21
 ALICUOTA_COSTO_ADMIN = 0.07
 ALICUOTA_COMISION = 0.03
 
-COLUMNA_FLETE = "F"
-COLUMNA_CANTIDAD = "G"
-COLUMNA_UNITARIO = "H"
-COLUMNA_CARGO = "I"
-COLUMNA_IMPUESTOS = "J"
-COLUMNA_ENVIO = "M"
-COLUMNA_NETO = "N"
-COLUMNA_COSTO_ADMIN = "O"
-COLUMNA_TC = "P"
-COLUMNA_COSTO_IMPO = "Q"
-COLUMNA_COSTO_TOTAL = "R"
-COLUMNA_BENEFICIO = "S"
+COLUMNAS_FORMULAS = 3
 
 def procesar_data(datos_venta, tc_venta):
     datos_venta[CANTIDAD] = int(datos_venta[CANTIDAD])
+    datos_venta[FECHA] = datetime.strftime(datos_venta[FECHA], FORMATO_FECHA)
     datos_venta[TC] = tc_venta
-    datos_venta[VALOR_FINAL] = float(datos_venta[VALOR_FINAL])
-    datos_venta[IBB] = float(datos_venta[IBB])
+    datos_venta[VALOR_VENTA] = float(datos_venta[VALOR_VENTA])
     datos_venta[CARGO_VENTA] = float(datos_venta[CARGO_VENTA])
-    datos_venta[COSTO_ENVIO] = 0.00
-    datos_venta[IVA] = datos_venta[VALOR_FINAL] - (datos_venta[VALOR_FINAL] / ALICUOTA_IVA)
-    datos_venta[VALOR_NETO] = datos_venta[VALOR_FINAL] - datos_venta[IVA] - datos_venta[IBB] - datos_venta[CARGO_VENTA] - datos_venta[COSTO_ENVIO]
-    datos_venta[COSTO_ADMIN] = 0.00
-    datos_venta[COMISION_VENDEDOR] = 0.00
+    datos_venta[COSTO_ENVIO] = float(datos_venta[COSTO_ENVIO])
+    datos_venta[IBB] = float(datos_venta[IBB])
 
-    if datos_venta[CANAL] == CANAL_FACTURA:
-        datos_venta[COMISION_VENDEDOR] = datos_venta[VALOR_NETO] * ALICUOTA_COMISION
+    if datos_venta[CANAL] == PLATAFORMA_E_COMMERCE:
+        datos_venta[VALOR_NETO] = datos_venta[VALOR_VENTA] / ALICUOTA_IVA
+        datos_venta[IVA] = datos_venta[VALOR_VENTA] - datos_venta[VALOR_NETO]
     
-    datos_venta[INGRESO_NETO] = 0
-
+    costo_impo_usd = 0
     if datos_venta[PRODUCTO] == ESTANTERIA_200:
-        datos_venta[COSTO_IMPORTACION] = (COSTO_800 * tc_venta) * datos_venta[CANTIDAD]
+        costo_impo_usd = COSTO_200
     else:
-        datos_venta[COSTO_IMPORTACION] = (COSTO_1200 * tc_venta) * datos_venta[CANTIDAD]
-    datos_venta[COSTO_ADMIN] = datos_venta[COSTO_IMPORTACION] * ALICUOTA_COSTO_ADMIN
-    datos_venta[INGRESO_NETO] = datos_venta[VALOR_NETO] - datos_venta[COMISION_VENDEDOR] - datos_venta[COSTO_ADMIN]
-
-    datos_venta[GANACIA] = datos_venta[INGRESO_NETO] - datos_venta[COSTO_IMPORTACION]
-    datos_venta[PORCENTAJE_GANACIA] = datos_venta[GANACIA] / datos_venta[COSTO_IMPORTACION]
-    datos_venta[CARGADO_EN_SISTEMA] = "NO"
+        costo_impo_usd = COSTO_300
     
+    datos_venta[COSTO_IMPORTACION] = costo_impo_usd * tc_venta
+    datos_venta[COSTO_ADMIN] = datos_venta[COSTO_IMPORTACION] * ALICUOTA_COSTO_ADMIN
+    datos_venta[COMISION_VENDEDOR] = datos_venta[VALOR_NETO] * ALICUOTA_COMISION
+
     return dict_to_array(datos_venta)
 
-def dict_to_array(datos):
-    claves = list(datos.keys())
-    nueva_fila = []
-    for clave in claves:
-        nueva_fila.append(datos[clave])
-    return nueva_fila
+def transcribir_excel(ruta_excel, datos_venta, mes):
+    libro = openpyxl.load_workbook(ruta_excel)
+    nombre_tabla = f"VENTAS_{mes}"
+    ws = None
+    tabla = None
+    hojas_a_buscar = [libro[mes]] if mes else libro.worksheets
 
-def transcribir_excel(nueva_fila, archivo_excel):
-    wb = openpyxl.load_workbook(archivo_excel)
-    hoja = wb.active
+    for hoja_actual in hojas_a_buscar:
+        if nombre_tabla in hoja_actual.tables:
+            ws = hoja_actual
+            tabla = hoja_actual.tables[nombre_tabla]
+            break
 
-    # nueva_fila.append(f"""={COLUMNA_FLETE}{proxima_fila}+{COLUMNA_CARGO}{proxima_fila}+{COLUMNA_IMPUESTOS}{proxima_fila}+{COLUMNA_ENVIO}{proxima_fila}+
-    #                   {COLUMNA_COSTO_ADMIN}{proxima_fila}+{COLUMNA_COSTO_IMPO}{proxima_fila}*{COLUMNA_CANTIDAD}{proxima_fila}""")
-    # nueva_fila.append(f"={COLUMNA_NETO}{proxima_fila}-{COLUMNA_COSTO_TOTAL}{proxima_fila}")
-    # nueva_fila.append(f"={COLUMNA_BENEFICIO}{proxima_fila}/{COLUMNA_NETO}{proxima_fila}")
-    hoja.append(nueva_fila)
-    fila_actual = hoja.max_row
-    fila_plantilla = hoja.max_row + 1
+    if tabla is None:
+        raise ValueError(f"No se encontró la tabla '{nombre_tabla}' en el archivo.")
 
-    for col in range(1, len(nueva_fila)+1):
-        celda_origen = hoja.cell(row=fila_plantilla, column=col)
-        celda_destino = hoja.cell(row=fila_actual, column=col)
+    rango_actual = tabla.ref
+    col_inicio, fila_inicio, col_fin, fila_fin = openpyxl.utils.cell.range_boundaries(rango_actual)
 
-        copiar_estilo(celda_origen, celda_destino)
+    fila_anterior = fila_fin
+    nueva_fila = fila_fin + 1
 
-    # tabla = ws.tables.get("Table2")
-    
-    # if tabla:
-    #     rango_actual = tabla.ref
-        
-    #     col_inicio, fila_inicio, col_fin, fila_fin = openpyxl.utils.cell.range_boundaries(rango_actual)
-    #     nueva_fila_fin = ws.max_row
-        
-    #     nuevo_rango = f"{openpyxl.utils.cell.get_column_letter(col_inicio)}{fila_inicio}:{openpyxl.utils.cell.get_column_letter(col_fin)}{nueva_fila_fin}"
-        
-    #     tabla.ref = nuevo_rango
-    
-    wb.save(archivo_excel)
+    col_inicio_formulas = col_fin - COLUMNAS_FORMULAS + 1
 
-def copiar_estilo(celda_origen, celda_destino):
-    celda_destino.font = copy(celda_origen.font)
-    celda_destino.border = copy(celda_origen.border)
-    celda_destino.fill = copy(celda_origen.fill)
-    celda_destino.number_format = copy(celda_origen.number_format)
-    celda_destino.alignment = copy(celda_origen.alignment)
-    celda_destino.protection = copy(celda_origen.protection)
+    for i, valor in enumerate(datos_venta):
+        col = col_inicio + i
+        if col >= col_inicio_formulas:
+            break
+        ws.cell(row=nueva_fila, column=col, value=valor)
+
+    for col in range(col_inicio_formulas, col_fin + 1):
+        letra = get_column_letter(col)
+        celda_origen = ws.cell(row=fila_anterior, column=col)
+        celda_destino = ws.cell(row=nueva_fila, column=col)
+
+        if isinstance(celda_origen.value, str) and celda_origen.value.startswith("="):
+            formula_traducida = Translator(
+                celda_origen.value,
+                origin=f"{letra}{fila_anterior}"
+            ).translate_formula(f"{letra}{nueva_fila}")
+            celda_destino.value = formula_traducida
+        else:
+            pass
+
+    nuevo_rango = f"{get_column_letter(col_inicio)}{fila_inicio}:{get_column_letter(col_fin)}{nueva_fila}"
+    tabla.ref = nuevo_rango
+
+    libro.save(ruta_excel)

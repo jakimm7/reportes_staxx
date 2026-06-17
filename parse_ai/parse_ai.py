@@ -9,50 +9,75 @@ REINTENTOS = 3
 PROMPT =  """Analiza este documento de venta y extrae únicamente los siguientes datos en formato JSON estricto. 
                 No apliques ninguna lógica adicional ni devuelvas campos que no se solicitan.
 
-                1. "fecha": Pone la fecha en la cual se realizo la venta de ML o se facturo la venta, según corresponda. En formato DD/MM/AA
-                2. "canal_venta": Si es una venta efectuada por Mercado Libre, pone "ML". Sino, pone "VENDEDOR"
-                3. "entregado": Pone "NO" por defecto, sin importar si es por "ML" o "VENDEDOR"
-                4. "cantidad": Completa con la cantidad de las estanterias que se vendieron en la operacion analizada.
-                5. "producto": Si el producto vendido es una estanteria de 300 o 1200 KG, pone "300 KG". Caso contrario, pone "200 KG"
-                6. "nombre_razon_social": Si es una venta de ML, distingui si la persona cuenta con CUIT. En ese caso, debes ingresar NOMBRE // RAZON SOCIAL. Caso contrario
-                pone solo el nombre de la persona. Si es una Factura A, solo va la razon social.
-                7. "numero_op": Si estas analizando una venta de ML, pone el numero de operación que te brinda el reporte. Si es una factura, deja el campo en blanco.
-                8. "numero_fc": Si estas analizando una factura, pone el numero de ella. Caso contrario deja el campo en blanco.
-                9. "direccion": Deja este campo completamente en blanco
-                10. "horario": Al igual que en "direccion", no pongas ningun dato aqui.
-                11. "dni_cuit": Si fuera el caso de una venta por "ML", pone el DNI o CUIT del cliente que figura en el reporte. Caso contrario, deja el campo vacío.
-                12. "cobro_flete": Deja este campo completamente en blanco para los dos tipos de canales de venta.
-                13. "medio_pago": Acá en caso de que sea una venta efectuada por "ML", completa este campo con "MP". Caso contrario, deja como dato "Transferencia"
-                14. "comentarios": Esta campo debe estar completamente sin ningun tipo de dato
-                15. "pago": Si es una venta efectuada por Mercado Libre, debes completar con un "SI". Caso contrario, completalo con un "NO"
-                16. "valor_venta": Aca debes completar con el valor FINAL de la venta, sin contemplar IBB y cargos por venta en el caso de Mercado Libre. Para las ventas
-                hechas por un canal de vendedor, tomar simplemente el valor final total contemplado en la factura o proforma.
-                17. "cargo_venta": En el caso de una venta de Mercado Libre, poner el correspondiente a la venta analizada. Caso contrario, dejar el campo con un "0"
-                18. "costo_envio": Dejar este campo en blanco para todas las ventas, sin importar el canal de venta.
-                19. "ibb": Detectar, en caso de una venta efectuada en Mercado Libre, el Impuesto de Ingresos Brutos correspondiente a la venta analizada. Caso contrario,
-                dejar el campo en "0".
+                1. "canal": En caso de tratarse de una orden de compra de mercado libre o screenshot con una venta de la página, completa el campo con la leyenda "ML". En
+                caso de que fuera una factura A, dejar el campo con la leyenda "VENDEDOR".
+                2. "producto": En caso de que se haya vendido una estanteria de 300 KG por estante o 1200 KG en total, completa el campo con la leyenda "300 KG". Caso contrario
+                debes dejar el mismo con la salida "200 KG".
+                3. "cantidad": Aquí debes de detallar la cantidad de estanterías que se vendieron en el reporte analizado.
+                4. "num_op": Si el pedido analizado es de Mercado Libre, completa con el número de orden de compra asociado al mismo. Es importante dejar el campo en blanco en caso
+                de tratarse de un reporte asociado a una Factura A.
+                5. "num_fc": Si el pedido analizado es de una Factura A, completa con el número de factura asociado a la misma. Es importante dejar el campo en blanco en caso
+                de tratarse de un reporte asociado a una venta por Mercado Libre.
+                6. "fecha": Completa este campo con la fecha asociada a la compra, ya sea de Mercado Libre o a la correspondiente fecha de facturación en caso de tratarse una homónima.
+                7. "tipo_cambio": Para los dos tipos de canales de venta, se debe dejar este campo vacío.
+                8. "nombre_razon_social": Si se trata de una venta de Mercado Libre, rastrea si existe alguna razon social asociada a la misma. Si no se econtrase, completar con el
+                nombre completo de la persona que realizo el pedido. En caso de una factura A, siempre utilizar la razon social a la cual se factura la misma.
+                9. "datos_facturacion": Para ambos canales de ventas, analiza y busca un CUIT, dirección fiscal y razón social/nombre. Si alguno de los datos no se encuentran en el
+                reporte analizado, completar con los datos que se encuentren o dejar en blanco si no se encuentra ninguno.
+                10. "dni_cuit": Completar con el CUIT de la razon social a la que se factura o el mismo que se encuentra asociado a la venta por Mercado Libre. Si no se encontrase un 
+                CUIT asociado a la venta, dejar el campo con el DNI de la persona a la cual efectuo la compra según el reporte.
+                11. "forma_pago": Solo si la venta es por Mercado Libre, completar el campo con la leyenda "Mercado Pago". Caso contrario, dejar el campo vacío.
+                12. "pago": Solo si la venta es por Mercado Libre, completar el campo con la leyenda "SI". Caso contrario, sobreescribir el mismo con el texto "NO".
+                13. "valor_venta": Para ambos canales de venta, ya sea Mercado Libre o una factura A, debes completarlo con el VALOR FINAL de la venta (es decir, con IVA incluído en
+                caso de tratarse de una Factura A. Para las ventas de Mercado Libre, simplemente utilizar el monto total por el cual se realizo la venta).
+                14. "cargo_venta": Si es una venta por Mercado Libre, completar con el cargo que realiza la plataforma a la hora de realizarse una venta por la misma. Dejar en 0 para
+                el caso de las ventas realizadas por factura A.
+                15. "ibb": Si es una venta por Mercado Libre, completar con el impuesto de Ingresos Brutos correspondiente a la venta, detallado por el reporte. Dejar en 0 para
+                el caso de las ventas realizadas por factura A.
+                16. "iva": Si es una venta que fue facturada, completar con el apartado del total de IVA en la parte inferior de la misma. Caso contrario, dejar el campo en 0.
+                17. "valor_neto": Si es una venta que fue facturada, completar con el apartado del total NETO en la parte inferior de la misma. Caso contrario, dejar el campo en 0.
                 
-                Ejemplo de salida:
+                
+                Ejemplo de salida de una venta de Mercado Libre:
                 {
-                "fecha": "04/05/2026",
-                "canal_venta": "ML",
-                "entregado": "NO",
-                "cantidad": "2",
+                "canal": "Mercado Libre",
                 "producto": "200 KG",
-                "nombre_razon_social": "NORA ANA SCHERVA",
-                "numero_op": "2000016129420630",
-                "numero_fc". "",
-                "direccion": "",
-                "horario": "",
-                "dni_cuit": "17541248"
-                "cobro_flete": "0",
-                "medio_pago": "MP",
-                "comentarios": "",
+                "cantidad": "1",
+                "num_op": "2000016301904764",
+                "num_fc": "",
+                "fecha": "6/5/2026",
+                "tipo_cambio": "",
+                "nombre_razon_social": "Diego Gastón Diomede",
+                "datos_facturacion": "Diego Gastón Diomede - DNI 24152630 - Calle 25 de Mayo 775, Córdoba - CP: 5004",
+                "dni_cuit": "24152630",
+                "forma_pago": "Mercado Pago",
                 "pago": "SI",
-                "valor_venta": "659998",
-                "cargo_venta": "92399.72",
-                "costo_envio": "0",
-                "ibb": "3959.99"
+                "valor_venta": "368350",
+                "cargo_venta": "51569",
+                "ibb": "7735.35",
+                "iva": "0",
+                "valor_neto": "0"
+                }
+
+                Ejemplo de salida de una venta facturada:
+                {
+                "canal": "VENDEDOR",
+                "producto": "200 KG",
+                "cantidad": "5",
+                "num_op": "",
+                "num_fc": "0010-00001482",
+                "fecha": "5/5/2026",
+                "tipo_cambio": "",
+                "nombre_razon_social": "COLMAN, ADRIAN KEVIN",
+                "datos_facturacion": "Adrián Kevin Colman - CUIT 20368972909 - Cordoba 33, Gualeguaychú",
+                "dni_cuit": "20368972909",
+                "forma_pago": "",
+                "pago": "NO",
+                "valor_venta": "1417500",
+                "cargo_venta": "0",
+                "ibb": "0",
+                "iva": "246012.4",
+                "valor_neto": "1171487.6"
                 }
     """
 

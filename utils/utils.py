@@ -1,6 +1,5 @@
 import requests
 import datetime
-import os
 import shutil
 from pathlib import Path
 
@@ -40,3 +39,10 @@ def mover_archivo(archivo: Path, destino: Path):
         shutil.move(str(archivo), str(ruta_destino_final))    
     else:
         print("Error al mover el archivo: El directorio destino no existe")
+
+def dict_to_array(datos):
+    claves = list(datos.keys())
+    nueva_fila = []
+    for clave in claves:
+        nueva_fila.append(datos[clave])
+    return nueva_fila
