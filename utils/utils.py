@@ -24,8 +24,7 @@ def cargar_tipo_cambio():
     
 def init_paths():
     year = datetime.datetime.now().year
-    month = datetime.datetime.now().month
-    nombre_archivo = f"{ARCHIVO_RESUMEN}_{month}_{year}_{EXTENSION_XLSX}"
+    nombre_archivo = f"{ARCHIVO_RESUMEN}_{year}_{EXTENSION_XLSX}"
     ruta_env = RUTA_APP / "api-key.env"
     ruta_reportes = RUTA_SAMBA / "nuevos"
     ruta_procesados = RUTA_SAMBA / "procesados"
