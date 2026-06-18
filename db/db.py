@@ -74,10 +74,10 @@ def cargar_venta(datos):
     cursor = conn.cursor()
 
     cursor.execute('''
-        INSERT INTO ventas (canal, cantidad, producto, razon_social, numero_op_fc,
-                            dni_cuit, forma_pago, valor_venta, cargo_venta, ibb,
-                            iva, neto, costo_admin, comision, costo_impo)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO ventas (canal, producto, cantidad, num_op, num_fc, fecha, tipo_cambio, 
+                   razon_social, datos_facturacion, dni_cuit, forma_pago, pago, valor_venta, cargo_venta, ibb,
+                    iva, valor_neto, costo_impo, costo_admin, comision)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(numero_op_fc) DO UPDATE SET
             canal             = excluded.canal,
             producto          = excluded.producto,
@@ -98,7 +98,7 @@ def cargar_venta(datos):
             neto              = excluded.neto,
             costo_impo        = excluded.costo_impo,
             costo_admin       = excluded.costo_admin,
-            comision          = excluded.comision,
+            comision          = excluded.comision
     ''', (
         datos[CANAL], datos[PRODUCTO], datos[CANTIDAD], datos[NUM_OP], datos[NUM_FC], datos[FECHA], datos[TIPO_CAMBIO], datos[RAZON_SOCIAL], datos[DATOS_FACTURACION],
         datos[DNI_CUIT], datos[FORMA_PAGO], datos[PAGO], datos[VALOR_VENTA], datos[CARGO_VENTA], datos[IBB], datos[IVA], datos[VALOR_NETO], datos[COSTO_IMPO],
