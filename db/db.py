@@ -75,9 +75,9 @@ def cargar_venta(datos):
     cursor = conn.cursor()
 
     cursor.execute('''
-        INSERT INTO ventas (canal, producto, cantidad, num_op, num_fc, fecha, tipo_cambio, 
+        INSERT INTO ventas (canal, producto, cantidad, numero_op, numero_fc, fecha, tipo_cambio, 
                    razon_social, datos_facturacion, dni_cuit, forma_pago, pago, valor_venta, cargo_venta, ibb,
-                    iva, valor_neto, costo_impo, costo_admin, comision)
+                    iva, neto, costo_impo, costo_admin, comision)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(numero_op_fc) DO UPDATE SET
             canal             = excluded.canal,
