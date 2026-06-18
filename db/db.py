@@ -5,23 +5,26 @@ import pandas as pd
 
 RUTA_SALES = Path("srv/reportes_staxx/db/sales.db")
 
-FECHA = 0
-TC = 1
-CANAL = 2
-CANTIDAD = 3
-PRODUCTO = 4
-RAZON_SOCIAL = 5
-NUMERO_OP_FC = 6
-DNI_CUIT = 7
-FORMA_PAGO = 8
-VALOR_VENTA = 9
-CARGO_VENTA = 10
-IBB = 11
-IVA = 12
-NETO = 13
-COSTO_ADMIN = 14
-COMISION = 15
-COSTO_IMPO = 16
+CANAL = 0
+PRODUCTO = 1
+CANTIDAD = 2
+NUM_OP = 3
+NUM_FC = 4
+FECHA = 5
+TIPO_CAMBIO = 6
+RAZON_SOCIAL = 7
+DATOS_FACTURACION = 8
+DNI_CUIT = 9
+FORMA_PAGO = 10
+PAGO = 11
+VALOR_VENTA = 12
+CARGO_VENTA = 13
+IBB = 14
+IVA = 15
+VALOR_NETO = 16
+COSTO_IMPO = 17
+COSTO_ADMIN = 18
+COMISION = 19
 
 def init_sales_db():
     try:
@@ -31,22 +34,33 @@ def init_sales_db():
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS ventas (
                 cargada_excel TEXT DEFAULT 'NO',
-                fecha DATE,
                 canal TEXT,
-                cantidad INT,
+                entregado TEXT DEFAULT 'NO',
+                armado TEXT DEFAULT 'NO',
                 producto TEXT,
+                cantidad INT,
+                numero_op TEXT PRIMARY KEY,
+                numero_fc TEXT PRIMARY KEY,
+                fecha DATE,
+                tipo_cambio FLOAT,
                 razon_social TEXT,
-                numero_op_fc TEXT PRIMARY KEY,
+                direccion TEXT DEFAULT '',
+                horario TEXT DEFAULT '',
+                datos_facturacion TEXT,
                 dni_cuit TEXT,
+                cobro_flete FLOAT DEFAULT 0.0,
                 forma_pago TEXT,
+                comentarios TEXT DEFAULT '',
+                pago TEXT,
                 valor_venta FLOAT,
                 cargo_venta FLOAT,
+                costo_envio FLOAT DEFAULT 0,0,
                 ibb FLOAT,
                 iva FLOAT,
                 neto FLOAT,
+                costo_impo FLOAT,
                 costo_admin FLOAT,
-                comision FLOAT,
-                costo_impo FLOAT          
+                comision FLOAT
             )
         ''')
         conn.commit()
@@ -65,26 +79,30 @@ def cargar_venta(datos):
                             iva, neto, costo_admin, comision, costo_impo)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(numero_op_fc) DO UPDATE SET
-            fecha        = excluded.fecha,
-            canal        = excluded.canal,
-            cantidad     = excluded.cantidad,
-            producto     = excluded.producto,
-            razon_social = excluded.razon_social,
-            dni_cuit     = excluded.dni_cuit,
-            forma_pago   = excluded.forma_pago,
-            valor_venta  = excluded.valor_venta,
-            cargo_venta  = excluded.cargo_venta,
-            ibb          = excluded.ibb,
-            iva          = excluded.iva,
-            neto         = excluded.neto,
-            costo_admin  = excluded.costo_admin,
-            comision     = excluded.comision,
-            costo_impo   = excluded.costo_impo
+            canal             = excluded.canal,
+            producto          = excluded.producto,
+            cantidad          = excluded.cantidad,
+            numero_op         = excluded.numero_op,
+            numero_fc         = excluded.numero_fc,
+            fecha             = excluded.fecha,
+            tipo_cambio       = excluded.tipo_cambio,
+            razon_social      = excluded.razon_social,
+            datos_facturacion = excluded.datos_facturacion,
+            dni_cuit          = excluded.dni_cuit,
+            forma_pago        = excluded.forma_pago,
+            pago              = excluded.pago,
+            valor_venta       = excluded.valor_venta,
+            cargo_venta       = excluded.cargo_venta,
+            ibb               = excluded.ibb,
+            iva               = excluded.iva,
+            neto              = excluded.neto,
+            costo_impo        = excluded.costo_impo,
+            costo_admin       = excluded.costo_admin,
+            comision          = excluded.comision,
     ''', (
-        datos[FECHA], datos[CANAL], datos[CANTIDAD], datos[PRODUCTO], datos[RAZON_SOCIAL],
-        datos[NUMERO_OP_FC], datos[DNI_CUIT], datos[FORMA_PAGO],
-        datos[VALOR_VENTA], datos[CARGO_VENTA], datos[IBB], datos[IVA],
-        datos[NETO], datos[COSTO_ADMIN], datos[COMISION], datos[COSTO_IMPO]
+        datos[CANAL], datos[PRODUCTO], datos[CANTIDAD], datos[NUM_OP], datos[NUM_FC], datos[FECHA], datos[TIPO_CAMBIO], datos[RAZON_SOCIAL], datos[DATOS_FACTURACION],
+        datos[DNI_CUIT], datos[FORMA_PAGO], datos[PAGO], datos[VALOR_VENTA], datos[CARGO_VENTA], datos[IBB], datos[IVA], datos[VALOR_NETO], datos[COSTO_IMPO],
+        datos[COSTO_ADMIN], datos[COMISION]
     ))
 
     conn.commit()

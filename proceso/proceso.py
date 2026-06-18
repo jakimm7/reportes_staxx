@@ -40,7 +40,7 @@ def procesar_data(datos_venta, tc_venta):
     datos_venta[TC] = tc_venta
     datos_venta[VALOR_VENTA] = float(datos_venta[VALOR_VENTA])
     datos_venta[CARGO_VENTA] = float(datos_venta[CARGO_VENTA])
-    datos_venta[COSTO_ENVIO] = float(datos_venta[COSTO_ENVIO])
+    datos_venta[COSTO_ENVIO] = 0
     datos_venta[IBB] = float(datos_venta[IBB])
 
     if datos_venta[CANAL] == PLATAFORMA_E_COMMERCE:

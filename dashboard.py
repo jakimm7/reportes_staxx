@@ -1,6 +1,5 @@
 import streamlit as st
-from utils.utils import init_paths
-from interface.interface import subir_facturas, subir_resumen
+from interface.interface import init, subir_facturas, subir_resumen
 
 RUTA_DB = "/srv/reportes_staxx/db/tracking.db"
 TITULO = "Staxx Reporter"
@@ -14,7 +13,7 @@ def main():
     st.title("📄 Procesador de Facturas")
     st.divider()
 
-    client, ruta_reportes, ruta_resumen, ruta_procesados = init_paths()
+    client, ruta_reportes, ruta_resumen, ruta_procesados = init()
 
     col1, col2 = st.columns(2)
 
