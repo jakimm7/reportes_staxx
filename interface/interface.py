@@ -3,7 +3,8 @@ from proceso.proceso import procesar_data, transcribir_excel
 from utils.utils import cargar_tipo_cambio, init_paths, mover_archivo
 from db.db import obtener_ventas_nuevas, marcar_venta_cargada, cargar_venta, init_sales_db
 
-NUMERO_OP_FC = 5
+NUMERO_OP = 5
+NUMERO_FC = 6
 ERROR_EXCEL_ABIERTO = "El archivo Excel está abierto. Cerralo e intentá de nuevo."
 
 def init():
@@ -50,7 +51,7 @@ def subir_resumen(ruta_resumen):
     try:
         for datos_venta in ventas:
             transcribir_excel(datos_venta, ruta_resumen)
-            marcar_venta_cargada(datos_venta[NUMERO_OP_FC])
+            marcar_venta_cargada(datos_venta[NUMERO_OP], datos_venta[NUMERO_FC])
         return ("ok", f"{len(ventas)} venta(s) transcripta(s) correctamente.")
     except PermissionError:
         return ("error", ERROR_EXCEL_ABIERTO)

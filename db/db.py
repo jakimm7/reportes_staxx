@@ -79,7 +79,7 @@ def cargar_venta(datos):
                    razon_social, datos_facturacion, dni_cuit, forma_pago, pago, valor_venta, cargo_venta, ibb,
                     iva, neto, costo_impo, costo_admin, comision)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(numero_op_fc) DO UPDATE SET
+        ON CONFLICT(numero_op, numero_fc) DO UPDATE SET
             canal             = excluded.canal,
             producto          = excluded.producto,
             cantidad          = excluded.cantidad,
@@ -114,9 +114,10 @@ def obtener_ventas_nuevas():
     cursor = conn.cursor()
 
     cursor.execute('''
-        SELECT canal, cantidad, producto, razon_social, numero_op_fc,
-               dni_cuit, forma_pago, valor_venta, cargo_venta, ibb,
-               iva, neto, costo_admin, comision, costo_impo
+        SELECT canal, entregado, armado, producto, cantidad, numero_op, numero_fc, fecha, tipo_cambio,
+                razon_social, direccion, horario, datos_facturacion, dni_cuit, cobro_flete, forma_pago,
+                comentarios, pago, valor_venta, cargo_venta, costo_envio, ibb, iva, neto, costo_impo,
+                costo_admin, comision
         FROM ventas
         WHERE cargada_excel = 'NO'
         ORDER BY ROWID
@@ -126,14 +127,12 @@ def obtener_ventas_nuevas():
     conn.close()
     return ventas
     
-def marcar_venta_cargada(numeros_op_fc):
+def marcar_venta_cargada(claves):
     conn = sqlite3.connect(RUTA_SALES)
     cursor = conn.cursor()
-
     cursor.executemany('''
-        UPDATE ventas SET cargada = 'SI'
-        WHERE numero_op_fc = ?
-    ''', [(numero,) for numero in numeros_op_fc])
-
+        UPDATE ventas SET cargada_excel = 'SI'
+        WHERE numero_op = ? AND numero_fc = ?
+    ''', claves)
     conn.commit()
     conn.close()
