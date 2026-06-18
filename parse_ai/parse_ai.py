@@ -37,7 +37,8 @@ PROMPT =  """Analiza este documento de venta y extrae únicamente los siguientes
                 16. "iva": Si es una venta que fue facturada, completar con el apartado del total de IVA en la parte inferior de la misma. Caso contrario, dejar el campo en 0.
                 17. "valor_neto": Si es una venta que fue facturada, completar con el apartado del total NETO en la parte inferior de la misma. Caso contrario, dejar el campo en 0.
                 
-                
+                NO OLVIDES NO USAR COMAS PARA LOS SEPARADOR DE MILES DE LOS NUMEROS, SOLO PUNTOS PARA LOS DECIMALES.
+
                 Ejemplo de salida de una venta de Mercado Libre:
                 {
                 "canal": "Mercado Libre",
