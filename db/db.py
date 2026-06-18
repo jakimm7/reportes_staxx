@@ -39,8 +39,8 @@ def init_sales_db():
                 armado TEXT DEFAULT 'NO',
                 producto TEXT,
                 cantidad INT,
-                numero_op TEXT PRIMARY KEY,
-                numero_fc TEXT PRIMARY KEY,
+                numero_op TEXT,
+                numero_fc TEXT,
                 fecha DATE,
                 tipo_cambio FLOAT,
                 razon_social TEXT,
@@ -54,13 +54,14 @@ def init_sales_db():
                 pago TEXT,
                 valor_venta FLOAT,
                 cargo_venta FLOAT,
-                costo_envio FLOAT DEFAULT 0,0,
+                costo_envio FLOAT DEFAULT 0.0,
                 ibb FLOAT,
                 iva FLOAT,
                 neto FLOAT,
                 costo_impo FLOAT,
                 costo_admin FLOAT,
-                comision FLOAT
+                comision FLOAT,
+                PRIMARY KEY (numero_op, numero_fc)
             )
         ''')
         conn.commit()
