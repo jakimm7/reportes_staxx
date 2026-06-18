@@ -44,13 +44,12 @@ def subir_facturas(client, ruta_reportes, ruta_procesados):
 
 def subir_resumen(ruta_resumen):
     ventas = obtener_ventas_nuevas()
-
     if not ventas:
         return "No hay ventas pendientes de transcribir."
 
     try:
         for datos_venta in ventas:
-            transcribir_excel(datos_venta, ruta_resumen)
+            transcribir_excel(ruta_resumen, datos_venta, "mayo")
             marcar_venta_cargada(datos_venta[NUMERO_OP], datos_venta[NUMERO_FC])
         return ("ok", f"{len(ventas)} venta(s) transcripta(s) correctamente.")
     except PermissionError:
