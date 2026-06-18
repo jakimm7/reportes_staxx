@@ -15,7 +15,7 @@ VALOR_NETO = "valor_neto"
 IVA = "iva"
 COSTO_IMPORTACION = "costo_importacion"
 COSTO_ADMIN = "costo_admin"
-CANAL = "canal_venta"
+CANAL = "canal"
 PRODUCTO = "producto"
 COMISION_VENDEDOR = "costo_vendedor"
 
