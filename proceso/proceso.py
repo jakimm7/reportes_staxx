@@ -36,7 +36,7 @@ COLUMNAS_FORMULAS = 3
 
 def procesar_data(datos_venta, tc_venta):
     datos_venta[CANTIDAD] = int(datos_venta[CANTIDAD])
-    datos_venta[FECHA] = datetime.strftime(datos_venta[FECHA], FORMATO_FECHA)
+    datos_venta[FECHA] = datetime.strptime(datos_venta[FECHA], FORMATO_FECHA).strftime(FORMATO_FECHA)
     datos_venta[TC] = tc_venta
     datos_venta[VALOR_VENTA] = float(datos_venta[VALOR_VENTA])
     datos_venta[CARGO_VENTA] = float(datos_venta[CARGO_VENTA])
