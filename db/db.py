@@ -130,7 +130,7 @@ def obtener_ventas_nuevas():
 def marcar_venta_cargada(claves):
     conn = sqlite3.connect(RUTA_SALES)
     cursor = conn.cursor()
-    cursor.executemany('''
+    cursor.execute('''
         UPDATE ventas SET cargada_excel = 'SI'
         WHERE numero_op = ? AND numero_fc = ?
     ''', claves)
