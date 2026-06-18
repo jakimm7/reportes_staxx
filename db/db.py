@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 import pandas as pd
 
-RUTA_SALES = Path("srv/reportes_staxx/db/sales.db")
+RUTA_SALES = Path("/srv/reportes_staxx/db/sales.db")
 
 CANAL = 0
 PRODUCTO = 1
