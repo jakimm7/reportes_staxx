@@ -56,7 +56,7 @@ def procesar_data(datos_venta, tc_venta):
     else:
         costo_impo_usd = COSTO_300
     
-    datos_venta[COSTO_IMPORTACION] = costo_impo_usd * tc_venta
+    datos_venta[COSTO_IMPORTACION] = (costo_impo_usd * tc_venta) * datos_venta[CANTIDAD]
     datos_venta[COSTO_ADMIN] = datos_venta[COSTO_IMPORTACION] * ALICUOTA_COSTO_ADMIN
     datos_venta[COMISION_VENDEDOR] = datos_venta[VALOR_NETO] * ALICUOTA_COMISION
 
