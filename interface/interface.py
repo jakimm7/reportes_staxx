@@ -50,7 +50,7 @@ def subir_resumen(ruta_resumen):
     try:
         for datos_venta in ventas:
             transcribir_excel(ruta_resumen, datos_venta, "mayo")
-            marcar_venta_cargada(datos_venta[NUMERO_OP], datos_venta[NUMERO_FC])
+            marcar_venta_cargada((datos_venta[NUMERO_OP], datos_venta[NUMERO_FC]))
         return ("ok", f"{len(ventas)} venta(s) transcripta(s) correctamente.")
     except PermissionError:
         return ("error", ERROR_EXCEL_ABIERTO)

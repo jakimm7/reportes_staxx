@@ -133,6 +133,6 @@ def marcar_venta_cargada(claves):
     cursor.executemany('''
         UPDATE ventas SET cargada_excel = 'SI'
         WHERE numero_op = ? AND numero_fc = ?
-    ''', claves)
+    ''', claves[0], claves[1])
     conn.commit()
     conn.close()
