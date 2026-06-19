@@ -49,7 +49,7 @@ def dict_to_array(datos):
 
 def copiar_estilo(origen, destino):
     destino.number_format = origen.number_format
-    destino.font = copy.copy(origen.font)
-    destino.fill = copy.copy(origen.fill)
-    destino.border = copy.copy(origen.border)
-    destino.alignment = copy.copy(origen.alignment)
+    destino.font = copy(origen.font)
+    destino.fill = copy(origen.fill)
+    destino.border = copy(origen.border)
+    destino.alignment = copy(origen.alignment)
