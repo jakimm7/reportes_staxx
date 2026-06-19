@@ -44,7 +44,7 @@ def procesar_data(datos_venta, tc_venta):
     datos_venta[IBB] = float(datos_venta[IBB])
 
     if datos_venta[CANAL] == PLATAFORMA_E_COMMERCE:
-        datos_venta[VALOR_NETO] = datos_venta[VALOR_VENTA] / ALICUOTA_IVA
+        datos_venta[VALOR_NETO] = (datos_venta[VALOR_VENTA] / ALICUOTA_IVA) - datos_venta[IBB]
         datos_venta[IVA] = datos_venta[VALOR_VENTA] - datos_venta[VALOR_NETO]
     else:
         datos_venta[VALOR_NETO] = float(datos_venta[VALOR_NETO])
