@@ -2,6 +2,7 @@ import requests
 import datetime
 import shutil
 from pathlib import Path
+from copy import copy
 
 RUTA_SAMBA = Path("/srv/reportes_staxx")
 RUTA_APP = Path("/home/jakim/staxx_executive/staxx_reporter/env")
@@ -45,3 +46,10 @@ def dict_to_array(datos):
     for clave in claves:
         nueva_fila.append(datos[clave])
     return nueva_fila
+
+def copiar_estilo(origen, destino):
+    destino.number_format = origen.number_format
+    destino.font = copy.copy(origen.font)
+    destino.fill = copy.copy(origen.fill)
+    destino.border = copy.copy(origen.border)
+    destino.alignment = copy.copy(origen.alignment)

@@ -2,7 +2,7 @@ import openpyxl
 from openpyxl.utils import get_column_letter
 from openpyxl.formula.translate import Translator
 from datetime import datetime
-from utils.utils import dict_to_array
+from utils.utils import dict_to_array, copiar_estilo
 
 CANTIDAD = "cantidad"
 FECHA = "fecha"
@@ -32,7 +32,7 @@ ALICUOTA_IVA = 1.21
 ALICUOTA_COSTO_ADMIN = 0.07
 ALICUOTA_COMISION = 0.04
 
-COLUMNAS_FORMULAS = 3
+COLUMNAS_FORMULAS = 4
 
 def procesar_data(datos_venta, tc_venta):
     datos_venta[CANTIDAD] = int(datos_venta[CANTIDAD])
@@ -83,19 +83,22 @@ def transcribir_excel(ruta_excel, datos_venta, mes):
 
     fila_anterior = fila_fin
     nueva_fila = fila_fin + 1
-
     col_inicio_formulas = col_fin - COLUMNAS_FORMULAS + 1
 
     for i, valor in enumerate(datos_venta):
         col = col_inicio + i
         if col >= col_inicio_formulas:
             break
-        ws.cell(row=nueva_fila, column=col, value=valor)
+        celda_origen = ws.cell(row=fila_anterior, column=col)
+        celda_destino = ws.cell(row=nueva_fila, column=col)
+        celda_destino.value = valor
+        copiar_estilo(celda_origen, celda_destino)
 
     for col in range(col_inicio_formulas, col_fin + 1):
         letra = get_column_letter(col)
         celda_origen = ws.cell(row=fila_anterior, column=col)
         celda_destino = ws.cell(row=nueva_fila, column=col)
+        copiar_estilo(celda_origen, celda_destino)
 
         if isinstance(celda_origen.value, str) and celda_origen.value.startswith("="):
             formula_traducida = Translator(
@@ -103,8 +106,6 @@ def transcribir_excel(ruta_excel, datos_venta, mes):
                 origin=f"{letra}{fila_anterior}"
             ).translate_formula(f"{letra}{nueva_fila}")
             celda_destino.value = formula_traducida
-        else:
-            pass
 
     nuevo_rango = f"{get_column_letter(col_inicio)}{fila_inicio}:{get_column_letter(col_fin)}{nueva_fila}"
     tabla.ref = nuevo_rango
