@@ -11,6 +11,8 @@ DOLAR_API_URL = "https://dolarapi.com/v1/dolares/oficial"
 COMPRA = "compra"
 VENTA = "venta"
 
+FORMATO_FECHA = "%d/%m/%Y"
+
 ARCHIVO_RESUMEN = "resumen"
 EXTENSION_XLSX = ".xlsx"
 
@@ -40,16 +42,12 @@ def mover_archivo(archivo: Path, destino: Path):
     else:
         print("Error al mover el archivo: El directorio destino no existe")
 
-def dict_to_array(datos):
-    claves = list(datos.keys())
-    nueva_fila = []
-    for clave in claves:
-        nueva_fila.append(datos[clave])
-    return nueva_fila
-
 def copiar_estilo(origen, destino):
     destino.number_format = origen.number_format
     destino.font = copy(origen.font)
     destino.fill = copy(origen.fill)
     destino.border = copy(origen.border)
     destino.alignment = copy(origen.alignment)
+
+def procesar_fecha(fecha_cruda):
+    return datetime.strptime(fecha_cruda, FORMATO_FECHA).strftime(FORMATO_FECHA)

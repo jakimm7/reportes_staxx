@@ -2,10 +2,19 @@ import openpyxl
 from openpyxl.utils import get_column_letter
 from openpyxl.formula.translate import Translator
 from datetime import datetime
-from utils.utils import dict_to_array, copiar_estilo
+from utils.utils import copiar_estilo, procesar_fecha
 
+CANAL = "canal"
+PRODUCTO = "producto"
 CANTIDAD = "cantidad"
+NUM_OP = "num_op"
+NUM_FC = "num_fc"
 FECHA = "fecha"
+NOMBRE = "nombre_razon_social"
+DATOS_FACTURACION = "datos_facturacion"
+DNI = "dni_cuit"
+FORMA_PAGO = "forma_pago"
+PAGO = "pago"
 TC = "tipo_cambio"
 VALOR_VENTA = "valor_venta"
 CARGO_VENTA = "cargo_venta"
@@ -15,9 +24,35 @@ VALOR_NETO = "valor_neto"
 IVA = "iva"
 COSTO_IMPORTACION = "costo_importacion"
 COSTO_ADMIN = "costo_admin"
-CANAL = "canal"
-PRODUCTO = "producto"
 COMISION_VENDEDOR = "costo_vendedor"
+
+POS_CANAL = 0
+POS_ENTREGADO = 1
+POS_ARMADO = 2
+POS_PRODUCTO = 3
+POS_CANTIDAD = 4
+POS_NUM_OP = 5
+POS_NUM_FC = 6
+POS_FECHA = 7
+POS_NOMBRE = 8
+POS_DIRECCION = 9
+POS_HORARIO = 10
+POS_DATOS_FACTURACION = 11
+POS_DNI = 12
+POS_COBRO_FLETE = 13
+POS_FORMA_PAGO = 14
+POS_COMENTARIOS = 15
+POS_PAGO = 16
+POS_TC = 17
+POS_VALOR_VENTA = 18
+POS_CARGO_VENTA = 19
+POS_COSTO_ENVIO = 20
+POS_IBB = 21
+POS_IVA = 22
+POS_VALOR_NETO = 23
+POS_COSTO_ADMIN = 24
+POS_COMISION = 25
+POS_COSTO_IMPO = 26
 
 PLATAFORMA_E_COMMERCE = "ML"
 ESTANTERIA_200 = "200 KG"
@@ -34,33 +69,48 @@ ALICUOTA_COMISION = 0.04
 
 COLUMNAS_FORMULAS = 4
 
-def procesar_data(datos_venta, tc_venta):
-    datos_venta[CANTIDAD] = int(datos_venta[CANTIDAD])
-    datos_venta[FECHA] = datetime.strptime(datos_venta[FECHA], FORMATO_FECHA).strftime(FORMATO_FECHA)
-    datos_venta[TC] = tc_venta
-    datos_venta[VALOR_VENTA] = float(datos_venta[VALOR_VENTA])
-    datos_venta[CARGO_VENTA] = float(datos_venta[CARGO_VENTA])
-    datos_venta[COSTO_ENVIO] = 0
-    datos_venta[IBB] = float(datos_venta[IBB])
+def procesar_data(datos_crudos, tc_venta):
+    datos_procesados = []
+    datos_procesados[POS_CANAL] = datos_crudos[CANAL]
+    datos_procesados[POS_ENTREGADO] = "NO"
+    datos_procesados[POS_ARMADO] = "NO"
+    datos_procesados[POS_PRODUCTO] = datos_crudos[PRODUCTO]
+    datos_procesados[POS_CANTIDAD] = int(datos_crudos[CANTIDAD])
+    datos_procesados[POS_NUM_OP] = datos_crudos[NUM_OP]
+    datos_procesados[POS_NUM_FC] = datos_crudos[NUM_FC]
+    datos_procesados[POS_FECHA] = procesar_fecha(datos_crudos[FECHA])
+    datos_procesados[POS_NOMBRE] = datos_crudos[NOMBRE]
+    datos_procesados[POS_DIRECCION] = ""
+    datos_procesados[POS_HORARIO] = ""
+    datos_procesados[POS_DATOS_FACTURACION] = datos_crudos[DATOS_FACTURACION]
+    datos_procesados[POS_DNI] = datos_crudos[DNI]
+    datos_procesados[POS_COBRO_FLETE] = 0.0
+    datos_procesados[POS_FORMA_PAGO] = datos_crudos[FORMA_PAGO]
+    datos_procesados[POS_PAGO] = datos_crudos[PAGO]
+    datos_procesados[POS_TC] = tc_venta
+    datos_procesados[POS_VALOR_VENTA] = float(datos_crudos[VALOR_VENTA])
+    datos_procesados[POS_CARGO_VENTA] = float(datos_crudos[CARGO_VENTA])
+    datos_procesados[POS_COSTO_ENVIO] = 0.0
+    datos_procesados[POS_IBB] = float(datos_crudos[IBB])
 
-    if datos_venta[CANAL] == PLATAFORMA_E_COMMERCE:
-        datos_venta[VALOR_NETO] = (datos_venta[VALOR_VENTA] / ALICUOTA_IVA) - datos_venta[IBB]
-        datos_venta[IVA] = datos_venta[VALOR_VENTA] - datos_venta[VALOR_NETO]
+    if datos_procesados[POS_CANAL] == PLATAFORMA_E_COMMERCE:
+        datos_procesados[POS_VALOR_NETO] = (datos_procesados[POS_VALOR_VENTA] / ALICUOTA_IVA) - datos_procesados[POS_IBB]
+        datos_procesados[POS_IVA] = datos_procesados[POS_VALOR_VENTA] - datos_procesados[POS_VALOR_NETO]
     else:
-        datos_venta[VALOR_NETO] = float(datos_venta[VALOR_NETO])
-        datos_venta[IVA] = float(datos_venta[IVA])
-    
-    costo_impo_usd = 0
-    if datos_venta[PRODUCTO] == ESTANTERIA_200:
-        costo_impo_usd = COSTO_200
-    else:
-        costo_impo_usd = COSTO_300
-    
-    datos_venta[COSTO_IMPORTACION] = (costo_impo_usd * tc_venta) * datos_venta[CANTIDAD]
-    datos_venta[COSTO_ADMIN] = datos_venta[COSTO_IMPORTACION] * ALICUOTA_COSTO_ADMIN
-    datos_venta[COMISION_VENDEDOR] = datos_venta[VALOR_NETO] * ALICUOTA_COMISION
+        datos_procesados[POS_VALOR_NETO] = float(datos_crudos[VALOR_NETO])
+        datos_procesados[IVA] = float(datos_crudos[IVA])
 
-    return dict_to_array(datos_venta)
+    costo_impo = 0
+    if datos_procesados[POS_PRODUCTO] == ESTANTERIA_200:
+        costo_impo = COSTO_200 * datos_procesados[POS_TC]
+    else:
+        costo_impo = COSTO_300 * datos_procesados[POS_TC]
+    
+    datos_procesados[POS_COSTO_ADMIN] = costo_impo * ALICUOTA_COSTO_ADMIN
+    datos_procesados[POS_COMISION] = datos_procesados[POS_VALOR_NETO] * ALICUOTA_COMISION
+    datos_procesados[POS_COSTO_IMPO] = costo_impo
+
+    return datos_procesados
 
 def transcribir_excel(ruta_excel, datos_venta, mes):
     libro = openpyxl.load_workbook(ruta_excel)
