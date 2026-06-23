@@ -54,6 +54,8 @@ POS_COSTO_ADMIN = 24
 POS_COMISION = 25
 POS_COSTO_IMPO = 26
 
+TAM_ARR = 26
+
 PLATAFORMA_E_COMMERCE = "ML"
 ESTANTERIA_200 = "200 KG"
 ESTANTERIA_300 = "300 KG"
@@ -70,7 +72,7 @@ ALICUOTA_COMISION = 0.04
 COLUMNAS_FORMULAS = 4
 
 def procesar_data(datos_crudos, tc_venta):
-    datos_procesados = []
+    datos_procesados = [None] * TAM_ARR
     datos_procesados[POS_CANAL] = datos_crudos[CANAL]
     datos_procesados[POS_ENTREGADO] = "NO"
     datos_procesados[POS_ARMADO] = "NO"
