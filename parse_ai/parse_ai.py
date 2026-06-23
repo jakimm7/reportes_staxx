@@ -19,7 +19,7 @@ PROMPT =  """Analiza este documento de venta y extrae únicamente los siguientes
                 5. "num_fc": Si el pedido analizado es de una Factura A, completa con el número de factura asociado a la misma. Es importante dejar el campo en blanco en caso
                 de tratarse de un reporte asociado a una venta por Mercado Libre.
                 6. "fecha": Completa este campo con la fecha asociada a la compra, ya sea de Mercado Libre o a la correspondiente fecha de facturación en caso de tratarse una homónima.
-                Es importante especificar la fecha con el formato dd/mm/aa (día, mes, año).
+                Es importante especificar la fecha con el formato dd/mm/aaaa (día, mes, año).
                 7. "tipo_cambio": Para los dos tipos de canales de venta, se debe dejar este campo vacío.
                 8. "nombre_razon_social": Si se trata de una venta de Mercado Libre, rastrea si existe alguna razon social asociada a la misma. Si no se econtrase, completar con el
                 nombre completo de la persona que realizo el pedido. En caso de una factura A, siempre utilizar la razon social a la cual se factura la misma.
