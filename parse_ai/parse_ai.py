@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 MODELO_AI = "gemini-2.5-flash"
 REINTENTOS = 3
 PROMPT =  """Analiza este documento de venta y extrae únicamente los siguientes datos en formato JSON estricto. 
-                No apliques ninguna lógica adicional ni devuelvas campos que no se solicitan.
+                No apliques ninguna lógica adicional ni devuelvas campos que no se solicitan. Utiliza puntos para los decimales de cada campo numérico que extraigas de los
+                reportes. No expreses de otra manera los números.
 
                 1. "canal": En caso de tratarse de una orden de compra de mercado libre o screenshot con una venta de la página, completa el campo con la leyenda "ML". En
                 caso de que fuera una factura A, dejar el campo con la leyenda "VENDEDOR".
@@ -36,8 +37,6 @@ PROMPT =  """Analiza este documento de venta y extrae únicamente los siguientes
                 el caso de las ventas realizadas por factura A.
                 15. "iva": Si es una venta que fue facturada, completar con el apartado del total de IVA en la parte inferior de la misma. Caso contrario, dejar el campo en 0.
                 16. "valor_neto": Si es una venta que fue facturada, completar con el apartado del total NETO en la parte inferior de la misma. Caso contrario, dejar el campo en 0.
-                
-                NO OLVIDES NO USAR COMAS PARA LOS SEPARADOR DE MILES DE LOS NUMEROS, SOLO PUNTOS PARA LOS DECIMALES.
 
                 Ejemplo de salida de una venta de Mercado Libre:
                 {
