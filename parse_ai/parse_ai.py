@@ -7,8 +7,19 @@ from dotenv import load_dotenv
 MODELO_AI = "gemini-2.5-flash"
 REINTENTOS = 3
 PROMPT =  """Analiza este documento de venta y extrae únicamente los siguientes datos en formato JSON estricto. 
-                No apliques ninguna lógica adicional ni devuelvas campos que no se solicitan. Utiliza puntos para los decimales de cada campo numérico que extraigas de los
-                reportes. NO utilices puntos para expresar los miles, simplemente junta el número sin ninguna separación para los miles. No expreses los números de otra manera
+                Utiliza puntos para los decimales de cada campo numérico que extraigas de los reportes. 
+                NO utilices puntos para expresar los miles, simplemente junta el número sin ninguna 
+                separación para los miles. No expreses los números de otra manera.
+
+                Ejemplos de conversión correcta (de cómo aparece en el documento → cómo debés escribirlo):
+                - "$1.417.500,00" en el documento → "1417500.00"
+                - "$98.404,96" en el documento → "98404.96"
+                - "1.234" en el documento (mil doscientos treinta y cuatro) → "1234"
+                - "1.234,5" en el documento → "1234.5"
+
+                Antes de responder, revisá cada campo numérico uno por uno: no debe tener más de un 
+                punto, y ese punto solo puede aparecer si representa decimales. Si tiene más de un 
+                punto, o una coma, está mal — corregilo antes de devolver el JSON.
 
                 1. "canal": En caso de tratarse de una orden de compra de mercado libre o screenshot con una venta de la página, completa el campo con la leyenda "ML". En
                 caso de que fuera una factura A, dejar el campo con la leyenda "VENDEDOR".
@@ -51,11 +62,11 @@ PROMPT =  """Analiza este documento de venta y extrae únicamente los siguientes
                 "dni_cuit": "24152630",
                 "forma_pago": "Mercado Pago",
                 "pago": "SI",
-                "valor_venta": "368350",
-                "cargo_venta": "51569",
-                "ibb": "7735.35",
-                "iva": "0",
-                "valor_neto": "0"
+                "valor_venta": 368350,
+                "cargo_venta": 51569,
+                "ibb": 7735.35,
+                "iva": 0,
+                "valor_neto": 0
                 }
 
                 Ejemplo de salida de una venta facturada:
@@ -71,12 +82,17 @@ PROMPT =  """Analiza este documento de venta y extrae únicamente los siguientes
                 "dni_cuit": "20368972909",
                 "forma_pago": "",
                 "pago": "NO",
-                "valor_venta": "1417500",
-                "cargo_venta": "0",
-                "ibb": "0",
-                "iva": "246012.4",
-                "valor_neto": "1171487.6"
+                "valor_venta": 1417500,
+                "cargo_venta": 0,
+                "ibb": 0,
+                "iva": 246012.4,
+                "valor_neto": 1171487.6
                 }
+
+                Los campos numéricos (cantidad, valor_venta, cargo_venta, ibb, iva, valor_neto) deben 
+                devolverse como número de JSON, NUNCA como texto entre comillas. Por lo tanto, no pueden 
+                contener comas ni puntos de miles bajo ninguna circunstancia — solo dígitos y, como 
+                máximo, un único punto decimal.
     """
 
 def init_ai_api(ruta_env):
