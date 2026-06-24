@@ -26,7 +26,7 @@ def cargar_tipo_cambio():
         return None
     
 def init_paths():
-    year = datetime.datetime.now().year
+    year = datetime.now().year
     nombre_archivo = f"{ARCHIVO_RESUMEN}_{year}{EXTENSION_XLSX}"
     ruta_env = RUTA_APP / "api-key.env"
     ruta_reportes = RUTA_SAMBA / "nuevos"
