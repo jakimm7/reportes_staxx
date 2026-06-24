@@ -4,27 +4,27 @@ from pathlib import Path
 
 RUTA_SALES = Path("/srv/reportes_staxx/db/sales.db")
 
-CANAL = 0
-PRODUCTO = 1
-CANTIDAD = 2
-NUM_OP = 3
-NUM_FC = 4
-FECHA = 5
-TIPO_CAMBIO = 6
-RAZON_SOCIAL = 7
-DATOS_FACTURACION = 8
-DNI_CUIT = 9
-FORMA_PAGO = 10
-PAGO = 11
-VALOR_VENTA = 12
-CARGO_VENTA = 13
-IBB = 14
-IVA = 15
-VALOR_NETO = 16
-COTO_ENVIO = 17
-COSTO_IMPO = 18
-COSTO_ADMIN = 19
-COMISION = 20
+POS_CANAL = 0
+POS_PRODUCTO = 1
+POS_CANTIDAD = 2
+POS_NUM_OP = 3
+POS_NUM_FC = 4
+POS_FECHA = 5
+POS_NOMBRE = 6
+POS_DATOS_FACTURACION = 7
+POS_DNI = 8
+POS_FORMA_PAGO = 9
+POS_COMENTARIOS = 10
+POS_PAGO = 11
+POS_TC = 12
+POS_VALOR_VENTA = 13
+POS_CARGO_VENTA = 14
+POS_IBB = 15
+POS_IVA = 16
+POS_VALOR_NETO = 17
+POS_COSTO_ADMIN = 18
+POS_COMISION = 19
+POS_COSTO_IMPO = 20
 
 def init_sales_db():
     try:
@@ -58,9 +58,9 @@ def init_sales_db():
                 ibb FLOAT,
                 iva FLOAT,
                 neto FLOAT,
-                costo_impo FLOAT,
                 costo_admin FLOAT,
                 comision FLOAT,
+                costo_impo FLOAT,
                 PRIMARY KEY (numero_op, numero_fc)
             )
         ''')
@@ -86,24 +86,24 @@ def cargar_venta(datos):
             numero_op         = excluded.numero_op,
             numero_fc         = excluded.numero_fc,
             fecha             = excluded.fecha,
-            tipo_cambio       = excluded.tipo_cambio,
             razon_social      = excluded.razon_social,
             datos_facturacion = excluded.datos_facturacion,
             dni_cuit          = excluded.dni_cuit,
             forma_pago        = excluded.forma_pago,
             pago              = excluded.pago,
+            tipo_cambio       = excluded.tipo_cambio,
             valor_venta       = excluded.valor_venta,
             cargo_venta       = excluded.cargo_venta,
             ibb               = excluded.ibb,
             iva               = excluded.iva,
             neto              = excluded.neto,
-            costo_impo        = excluded.costo_impo,
             costo_admin       = excluded.costo_admin,
             comision          = excluded.comision
+            costo_impo        = excluded.costo_impo,
     ''', (
-        datos[CANAL], datos[PRODUCTO], datos[CANTIDAD], datos[NUM_OP], datos[NUM_FC], datos[FECHA], datos[TIPO_CAMBIO], datos[RAZON_SOCIAL], datos[DATOS_FACTURACION],
-        datos[DNI_CUIT], datos[FORMA_PAGO], datos[PAGO], datos[VALOR_VENTA], datos[CARGO_VENTA], datos[IBB], datos[IVA], datos[VALOR_NETO], datos[COSTO_IMPO],
-        datos[COSTO_ADMIN], datos[COMISION]
+        datos[POS_CANAL], datos[POS_PRODUCTO], datos[POS_CANTIDAD], datos[POS_NUM_OP], datos[POS_NUM_FC], datos[POS_FECHA], datos[POS_NOMBRE], datos[POS_DATOS_FACTURACION],
+        datos[POS_DNI], datos[POS_FORMA_PAGO], datos[POS_PAGO], datos[POS_TC], datos[POS_VALOR_VENTA], datos[POS_CARGO_VENTA], datos[POS_IBB], datos[POS_IVA], datos[POS_VALOR_NETO],
+        datos[POS_COSTO_ADMIN], datos[POS_COMISION], datos[POS_COSTO_IMPO]
     ))
 
     conn.commit()
@@ -114,9 +114,9 @@ def obtener_ventas_nuevas():
     cursor = conn.cursor()
 
     cursor.execute('''
-        SELECT canal, entregado, armado, producto, cantidad, numero_op, numero_fc, fecha, tipo_cambio,
-                razon_social, direccion, horario, datos_facturacion, dni_cuit, cobro_flete, forma_pago,
-                comentarios, pago, valor_venta, cargo_venta, costo_envio, ibb, iva, neto, costo_impo,
+        SELECT canal, entregado, armado, producto, cantidad, numero_op, numero_fc, fecha, razon_social,
+                direccion, horario, datos_facturacion, dni_cuit, cobro_flete, forma_pago, comentarios,
+                pago, tipo_cambio, valor_venta, cargo_venta, costo_envio, ibb, iva, neto, costo_impo,
                 costo_admin, comision
         FROM ventas
         WHERE cargada_excel = 'NO'

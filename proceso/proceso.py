@@ -26,40 +26,32 @@ COSTO_ADMIN = "costo_admin"
 COMISION_VENDEDOR = "costo_vendedor"
 
 POS_CANAL = 0
-POS_ENTREGADO = 1
-POS_ARMADO = 2
-POS_PRODUCTO = 3
-POS_CANTIDAD = 4
-POS_NUM_OP = 5
-POS_NUM_FC = 6
-POS_FECHA = 7
-POS_NOMBRE = 8
-POS_DIRECCION = 9
-POS_HORARIO = 10
-POS_DATOS_FACTURACION = 11
-POS_DNI = 12
-POS_COBRO_FLETE = 13
-POS_FORMA_PAGO = 14
-POS_COMENTARIOS = 15
-POS_PAGO = 16
-POS_TC = 17
-POS_VALOR_VENTA = 18
-POS_CARGO_VENTA = 19
-POS_COSTO_ENVIO = 20
-POS_IBB = 21
-POS_IVA = 22
-POS_VALOR_NETO = 23
-POS_COSTO_ADMIN = 24
-POS_COMISION = 25
-POS_COSTO_IMPO = 26
+POS_PRODUCTO = 1
+POS_CANTIDAD = 2
+POS_NUM_OP = 3
+POS_NUM_FC = 4
+POS_FECHA = 5
+POS_NOMBRE = 6
+POS_DATOS_FACTURACION = 7
+POS_DNI = 8
+POS_FORMA_PAGO = 9
+POS_COMENTARIOS = 10
+POS_PAGO = 11
+POS_TC = 12
+POS_VALOR_VENTA = 13
+POS_CARGO_VENTA = 14
+POS_IBB = 15
+POS_IVA = 16
+POS_VALOR_NETO = 17
+POS_COSTO_ADMIN = 18
+POS_COMISION = 19
+POS_COSTO_IMPO = 20
 
-TAM_ARR = 27
+TAM_ARR = 21
 
 PLATAFORMA_E_COMMERCE = "ML"
 ESTANTERIA_200 = "200 KG"
 ESTANTERIA_300 = "300 KG"
-
-FORMATO_FECHA = "%d/%m/%Y"
 
 COSTO_200 = 65.58
 COSTO_300 = 87.17
@@ -73,25 +65,19 @@ COLUMNAS_FORMULAS = 4
 def procesar_data(datos_crudos, tc_venta):
     datos_procesados = [None] * TAM_ARR
     datos_procesados[POS_CANAL] = datos_crudos[CANAL]
-    datos_procesados[POS_ENTREGADO] = "NO"
-    datos_procesados[POS_ARMADO] = "NO"
     datos_procesados[POS_PRODUCTO] = datos_crudos[PRODUCTO]
     datos_procesados[POS_CANTIDAD] = limpiar_numero(datos_crudos[CANTIDAD])
     datos_procesados[POS_NUM_OP] = datos_crudos[NUM_OP]
     datos_procesados[POS_NUM_FC] = datos_crudos[NUM_FC]
     datos_procesados[POS_FECHA] = procesar_fecha(datos_crudos[FECHA])
     datos_procesados[POS_NOMBRE] = datos_crudos[NOMBRE]
-    datos_procesados[POS_DIRECCION] = ""
-    datos_procesados[POS_HORARIO] = ""
     datos_procesados[POS_DATOS_FACTURACION] = datos_crudos[DATOS_FACTURACION]
     datos_procesados[POS_DNI] = datos_crudos[DNI]
-    datos_procesados[POS_COBRO_FLETE] = 0.0
     datos_procesados[POS_FORMA_PAGO] = datos_crudos[FORMA_PAGO]
     datos_procesados[POS_PAGO] = datos_crudos[PAGO]
     datos_procesados[POS_TC] = tc_venta
     datos_procesados[POS_VALOR_VENTA] = limpiar_numero(datos_crudos[VALOR_VENTA])
     datos_procesados[POS_CARGO_VENTA] = limpiar_numero(datos_crudos[CARGO_VENTA])
-    datos_procesados[POS_COSTO_ENVIO] = 0.0
     datos_procesados[POS_IBB] = limpiar_numero(datos_crudos[IBB])
 
     if datos_procesados[POS_CANAL] == PLATAFORMA_E_COMMERCE:
