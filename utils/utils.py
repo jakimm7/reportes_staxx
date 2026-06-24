@@ -51,3 +51,17 @@ def copiar_estilo(origen, destino):
 
 def procesar_fecha(fecha_cruda):
     return datetime.strptime(fecha_cruda, FORMATO_FECHA).strftime(FORMATO_FECHA)
+
+def limpiar_numero(valor):
+    if isinstance(valor, (int, float)):
+        return float(valor)
+    valor = str(valor).strip()
+    
+    if ',' in valor and '.' in valor:
+        valor = valor.replace('.', '').replace(',', '.')
+    elif ',' in valor:
+        valor = valor.replace(',', '.')
+    elif valor.count('.') > 1:
+        valor = valor.replace('.', '')
+
+    return float(valor)

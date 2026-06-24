@@ -1,7 +1,7 @@
 import openpyxl
 from openpyxl.utils import get_column_letter
 from openpyxl.formula.translate import Translator
-from utils.utils import copiar_estilo, procesar_fecha
+from utils.utils import copiar_estilo, procesar_fecha, limpiar_numero
 
 CANAL = "canal"
 PRODUCTO = "producto"
@@ -76,7 +76,7 @@ def procesar_data(datos_crudos, tc_venta):
     datos_procesados[POS_ENTREGADO] = "NO"
     datos_procesados[POS_ARMADO] = "NO"
     datos_procesados[POS_PRODUCTO] = datos_crudos[PRODUCTO]
-    datos_procesados[POS_CANTIDAD] = int(datos_crudos[CANTIDAD])
+    datos_procesados[POS_CANTIDAD] = limpiar_numero(datos_crudos[CANTIDAD])
     datos_procesados[POS_NUM_OP] = datos_crudos[NUM_OP]
     datos_procesados[POS_NUM_FC] = datos_crudos[NUM_FC]
     datos_procesados[POS_FECHA] = procesar_fecha(datos_crudos[FECHA])
@@ -89,17 +89,17 @@ def procesar_data(datos_crudos, tc_venta):
     datos_procesados[POS_FORMA_PAGO] = datos_crudos[FORMA_PAGO]
     datos_procesados[POS_PAGO] = datos_crudos[PAGO]
     datos_procesados[POS_TC] = tc_venta
-    datos_procesados[POS_VALOR_VENTA] = float(datos_crudos[VALOR_VENTA])
-    datos_procesados[POS_CARGO_VENTA] = float(datos_crudos[CARGO_VENTA])
+    datos_procesados[POS_VALOR_VENTA] = limpiar_numero(datos_crudos[VALOR_VENTA])
+    datos_procesados[POS_CARGO_VENTA] = limpiar_numero(datos_crudos[CARGO_VENTA])
     datos_procesados[POS_COSTO_ENVIO] = 0.0
-    datos_procesados[POS_IBB] = float(datos_crudos[IBB])
+    datos_procesados[POS_IBB] = limpiar_numero(datos_crudos[IBB])
 
     if datos_procesados[POS_CANAL] == PLATAFORMA_E_COMMERCE:
         datos_procesados[POS_VALOR_NETO] = (datos_procesados[POS_VALOR_VENTA] / ALICUOTA_IVA) - datos_procesados[POS_IBB]
         datos_procesados[POS_IVA] = datos_procesados[POS_VALOR_VENTA] - datos_procesados[POS_VALOR_NETO]
     else:
-        datos_procesados[POS_VALOR_NETO] = float(datos_crudos[VALOR_NETO])
-        datos_procesados[POS_IVA] = float(datos_crudos[IVA])
+        datos_procesados[POS_VALOR_NETO] = limpiar_numero(datos_crudos[VALOR_NETO])
+        datos_procesados[POS_IVA] = limpiar_numero(datos_crudos[IVA])
 
     costo_impo = 0
     if datos_procesados[POS_PRODUCTO] == ESTANTERIA_200:
