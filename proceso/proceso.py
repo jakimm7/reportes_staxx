@@ -100,7 +100,7 @@ def procesar_data(datos_crudos, tc_venta):
         datos_procesados[POS_IVA] = datos_procesados[POS_VALOR_VENTA] - datos_procesados[POS_VALOR_NETO]
     else:
         datos_procesados[POS_VALOR_NETO] = float(datos_crudos[VALOR_NETO])
-        datos_procesados[IVA] = float(datos_crudos[IVA])
+        datos_procesados[POS_IVA] = float(datos_crudos[IVA])
 
     costo_impo = 0
     if datos_procesados[POS_PRODUCTO] == ESTANTERIA_200:
