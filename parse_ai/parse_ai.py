@@ -8,7 +8,7 @@ MODELO_AI = "gemini-2.5-flash"
 REINTENTOS = 3
 PROMPT =  """Analiza este documento de venta y extrae únicamente los siguientes datos en formato JSON estricto. 
                 No apliques ninguna lógica adicional ni devuelvas campos que no se solicitan. Utiliza puntos para los decimales de cada campo numérico que extraigas de los
-                reportes. No expreses de otra manera los números.
+                reportes. NO utilices puntos para expresar los miles, simplemente junta el número sin ninguna separación para los miles. No expreses los números de otra manera
 
                 1. "canal": En caso de tratarse de una orden de compra de mercado libre o screenshot con una venta de la página, completa el campo con la leyenda "ML". En
                 caso de que fuera una factura A, dejar el campo con la leyenda "VENDEDOR".

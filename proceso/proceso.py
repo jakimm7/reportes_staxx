@@ -1,7 +1,6 @@
 import openpyxl
 from openpyxl.utils import get_column_letter
 from openpyxl.formula.translate import Translator
-from datetime import datetime
 from utils.utils import copiar_estilo, procesar_fecha
 
 CANAL = "canal"

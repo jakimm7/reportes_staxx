@@ -1,7 +1,6 @@
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-import pandas as pd
 
 RUTA_SALES = Path("/srv/reportes_staxx/db/sales.db")
 
