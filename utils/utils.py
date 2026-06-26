@@ -35,7 +35,7 @@ def init_paths():
 
     return ruta_env, ruta_reportes, ruta_resumen, ruta_procesados
 
-def mover_archivo(archivo: Path, destino: Path):
+def mover_archivo(archivo, destino):
     if archivo.exists() and destino.exists():
         ruta_destino_final = destino / archivo.name
         shutil.move(str(archivo), str(ruta_destino_final))    

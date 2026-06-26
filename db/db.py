@@ -99,7 +99,7 @@ def cargar_venta(datos):
             neto              = excluded.neto,
             costo_admin       = excluded.costo_admin,
             comision          = excluded.comision
-            costo_impo        = excluded.costo_impo,
+            costo_impo        = excluded.costo_impo
     ''', (
         datos[POS_CANAL], datos[POS_PRODUCTO], datos[POS_CANTIDAD], datos[POS_NUM_OP], datos[POS_NUM_FC], datos[POS_FECHA], datos[POS_NOMBRE], datos[POS_DATOS_FACTURACION],
         datos[POS_DNI], datos[POS_FORMA_PAGO], datos[POS_PAGO], datos[POS_TC], datos[POS_VALOR_VENTA], datos[POS_CARGO_VENTA], datos[POS_IBB], datos[POS_IVA], datos[POS_VALOR_NETO],
@@ -116,8 +116,8 @@ def obtener_ventas_nuevas():
     cursor.execute('''
         SELECT canal, entregado, armado, producto, cantidad, numero_op, numero_fc, fecha, razon_social,
                 direccion, horario, datos_facturacion, dni_cuit, cobro_flete, forma_pago, comentarios,
-                pago, tipo_cambio, valor_venta, cargo_venta, costo_envio, ibb, iva, neto, costo_impo,
-                costo_admin, comision
+                pago, tipo_cambio, valor_venta, cargo_venta, costo_envio, ibb, iva, neto,costo_admin, 
+                comision, costo_impo
         FROM ventas
         WHERE cargada_excel = 'NO'
         ORDER BY ROWID
