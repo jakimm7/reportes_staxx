@@ -98,12 +98,12 @@ def cargar_venta(datos):
             iva               = excluded.iva,
             neto              = excluded.neto,
             costo_admin       = excluded.costo_admin,
-            comision          = excluded.comision
+            comision          = excluded.comision,
             costo_impo        = excluded.costo_impo
     ''', (
-        datos[POS_CANAL], datos[POS_PRODUCTO], datos[POS_CANTIDAD], datos[POS_NUM_OP], datos[POS_NUM_FC], datos[POS_FECHA], datos[POS_NOMBRE], datos[POS_DATOS_FACTURACION],
-        datos[POS_DNI], datos[POS_FORMA_PAGO], datos[POS_PAGO], datos[POS_TC], datos[POS_VALOR_VENTA], datos[POS_CARGO_VENTA], datos[POS_IBB], datos[POS_IVA], datos[POS_VALOR_NETO],
-        datos[POS_COSTO_ADMIN], datos[POS_COMISION], datos[POS_COSTO_IMPO]
+        datos[POS_CANAL], datos[POS_PRODUCTO], datos[POS_CANTIDAD], datos[POS_NUM_OP], datos[POS_NUM_FC], datos[POS_FECHA], datos[POS_TC],
+        datos[POS_NOMBRE], datos[POS_DATOS_FACTURACION], datos[POS_DNI], datos[POS_FORMA_PAGO], datos[POS_PAGO], datos[POS_VALOR_VENTA],
+        datos[POS_CARGO_VENTA], datos[POS_IBB], datos[POS_IVA], datos[POS_VALOR_NETO], datos[POS_COSTO_IMPO], datos[POS_COSTO_ADMIN], datos[POS_COMISION]
     ))
 
     conn.commit()
