@@ -99,11 +99,9 @@ def procesar_data(datos_crudos, tc_venta):
 
     return datos_procesados
 
-def transcribir_excel(ruta_excel, datos_venta, mes):
+def transcribir_excel(ruta_excel, datos_venta, mes, nombre_tabla):
     libro = openpyxl.load_workbook(ruta_excel)
-    nombre_tabla = f"VENTAS_{mes}"
-    ws = None
-    tabla = None
+    ws, tabla = None
     hojas_a_buscar = [libro[mes]] if mes else libro.worksheets
 
     for hoja_actual in hojas_a_buscar:

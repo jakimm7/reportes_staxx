@@ -65,3 +65,6 @@ def limpiar_numero(valor):
         valor = valor.replace('.', '')
 
     return float(valor)
+
+def archivo_elegible(archivo):
+    return archivo.is_file() and not archivo.name.starts_with(".")
